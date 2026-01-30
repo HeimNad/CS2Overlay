@@ -84,6 +84,12 @@ Server → Client: `match:update`, `bp:update`, `overlay:update`, `player:statsU
 - `overlayStore` — overlay visibility/opacity, scene switching
 - `socketStore` — WebSocket connection management
 
+## Git Commit Convention
+
+Do NOT add `Co-Authored-By` lines in commits. AI assistance is acknowledged here in CLAUDE.md.
+
+This project is developed with assistance from **Claude Code** (claude.ai/code).
+
 ## Design Constraints
 
 - All overlay pages must use **transparent backgrounds** for OBS compositing
