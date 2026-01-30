@@ -165,6 +165,24 @@ export function initializeSocket(httpServer: HttpServer, corsOrigin: string): Ty
       io.to('admin').emit('overlay:update', state);
     });
 
+    socket.on('overlay:setOpacity', (payload) => {
+      console.log(`[Socket] overlay:setOpacity`, payload);
+      const state = overlayState.setOpacity(payload.name, payload.opacity);
+      io.to('overlay').emit('overlay:update', state);
+      io.to('admin').emit('overlay:update', state);
+    });
+
+    socket.on('overlay:applyScene', (payload) => {
+      console.log(`[Socket] overlay:applyScene`, payload);
+      const names = Object.keys(payload.overlays) as Array<keyof typeof payload.overlays>;
+      for (const name of names) {
+        overlayState.toggle(name, payload.overlays[name]);
+      }
+      const state = overlayState.getState();
+      io.to('overlay').emit('overlay:update', state);
+      io.to('admin').emit('overlay:update', state);
+    });
+
     socket.on('overlay:scene', (payload) => {
       console.log(`[Socket] overlay:scene`, payload);
       io.to('overlay').emit('overlay:update', overlayState.getState());

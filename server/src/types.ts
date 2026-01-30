@@ -194,6 +194,15 @@ export interface OverlayTogglePayload {
   visible: boolean;
 }
 
+export interface OverlaySetOpacityPayload {
+  name: OverlayName;
+  opacity: number;
+}
+
+export interface OverlayApplyScenePayload {
+  overlays: Record<OverlayName, boolean>;
+}
+
 export interface OverlayScenePayload {
   sceneId: string;
 }
@@ -229,6 +238,8 @@ export interface ClientToServerEvents {
   'bp:undo': (payload: BPUndoPayload) => void;
   'bp:reset': (payload: BPResetPayload) => void;
   'overlay:toggle': (payload: OverlayTogglePayload) => void;
+  'overlay:setOpacity': (payload: OverlaySetOpacityPayload) => void;
+  'overlay:applyScene': (payload: OverlayApplyScenePayload) => void;
   'overlay:scene': (payload: OverlayScenePayload) => void;
   'state:requestSync': () => void;
 }
