@@ -105,6 +105,7 @@ export const BPActionSchema = z.object({
 export const BPSessionSchema = z.object({
   id: z.string(),
   matchId: z.string(),
+  format: MatchFormatSchema,
   mapPool: z.array(z.string()).min(1),
   actions: z.array(BPActionSchema),
   currentPhase: BPPhaseSchema,

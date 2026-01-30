@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { OverlayState, OverlayName } from '@/types';
 
-const defaultComponentState = { visible: false, opacity: 1 };
+const defaultComponentState = { visible: true, opacity: 1 };
 
 const defaultOverlayState: OverlayState = {
   scoreboard: { ...defaultComponentState },

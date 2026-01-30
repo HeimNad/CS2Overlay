@@ -88,6 +88,7 @@ export type RoundEndReason = 'elimination' | 'bomb' | 'time' | 'defuse';
 export interface BPSession {
   id: string;
   matchId: string;
+  format: MatchFormat;
   mapPool: string[];
   actions: BPAction[];
   currentPhase: BPPhase;
@@ -166,6 +167,22 @@ export type SponsorTier = 'title' | 'main' | 'partner';
 // ============================================
 
 // Client -> Server payloads
+export interface MatchInitPayload {
+  teamAName: string;
+  teamAShortName: string;
+  teamBName: string;
+  teamBShortName: string;
+  format: MatchFormat;
+}
+
+export interface BPInitPayload {
+  format: MatchFormat;
+}
+
+export interface BPActionPayload {
+  map: string;
+}
+
 export interface ScoreUpdatePayload {
   team: TeamSide;
   delta: number;
@@ -223,20 +240,27 @@ export interface SystemNotificationPayload {
 // ============================================
 
 export interface ClientToServerEvents {
+  'match:init': (payload: MatchInitPayload) => void;
   'match:scoreUpdate': (payload: ScoreUpdatePayload) => void;
   'match:roundUpdate': (payload: RoundUpdatePayload) => void;
   'match:statusChange': (payload: StatusChangePayload) => void;
+  'match:reset': () => void;
+  'bp:init': (payload: BPInitPayload) => void;
+  'bp:action': (payload: BPActionPayload) => void;
   'bp:ban': (payload: BPBanPayload) => void;
   'bp:pick': (payload: BPPickPayload) => void;
   'bp:undo': (payload: BPUndoPayload) => void;
   'bp:reset': (payload: BPResetPayload) => void;
   'overlay:toggle': (payload: OverlayTogglePayload) => void;
   'overlay:scene': (payload: OverlayScenePayload) => void;
+  'state:requestSync': () => void;
 }
 
 export interface ServerToClientEvents {
   'match:update': (payload: Match) => void;
+  'match:cleared': () => void;
   'bp:update': (payload: BPSession) => void;
+  'bp:cleared': () => void;
   'overlay:update': (payload: OverlayState) => void;
   'player:statsUpdate': (payload: PlayerStats[]) => void;
   'system:error': (payload: SystemErrorPayload) => void;

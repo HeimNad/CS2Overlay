@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { socketService } from '@/lib/socket';
+import { setupSocketListeners } from '@/lib/socketListeners';
 
 type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'failed';
 
@@ -21,6 +22,7 @@ export const useSocketStore = create<SocketStore>((set) => ({
     });
 
     socketService.connect(socketUrl);
+    setupSocketListeners();
   },
 
   disconnect: () => {

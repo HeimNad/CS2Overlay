@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { BPSession, BPAction, TeamSide } from '@/types';
+import type { BPSession, BPAction, BPPhase, TeamSide } from '@/types';
 
 interface BPStore {
   session: BPSession | null;
@@ -10,9 +10,16 @@ interface BPStore {
   pick: (team: TeamSide, map: string) => void;
   undo: () => void;
   reset: () => void;
+
+  // Helpers
+  getBannedMaps: () => BPAction[];
+  getPickedMaps: () => BPAction[];
+  getRemainingMaps: () => string[];
+  getMapAction: (mapName: string) => BPAction | undefined;
+  getDeciderMap: () => string | null;
 }
 
-export const useBPStore = create<BPStore>((set) => ({
+export const useBPStore = create<BPStore>((set, get) => ({
   session: null,
   history: [],
 
@@ -74,4 +81,37 @@ export const useBPStore = create<BPStore>((set) => ({
     }),
 
   reset: () => set({ session: null, history: [] }),
+
+  getBannedMaps: () => {
+    const session = get().session;
+    if (!session) return [];
+    return session.actions.filter((a) => a.type === 'ban');
+  },
+
+  getPickedMaps: () => {
+    const session = get().session;
+    if (!session) return [];
+    return session.actions.filter((a) => a.type === 'pick');
+  },
+
+  getRemainingMaps: () => {
+    const session = get().session;
+    if (!session) return [];
+    const usedMaps = new Set(session.actions.map((a) => a.map));
+    return session.mapPool.filter((m) => !usedMaps.has(m));
+  },
+
+  getMapAction: (mapName: string) => {
+    const session = get().session;
+    if (!session) return undefined;
+    return session.actions.find((a) => a.map === mapName);
+  },
+
+  getDeciderMap: () => {
+    const session = get().session;
+    if (!session || session.status !== 'completed') return null;
+    const usedMaps = new Set(session.actions.map((a) => a.map));
+    const remaining = session.mapPool.filter((m) => !usedMaps.has(m));
+    return remaining.length === 1 ? remaining[0] : null;
+  },
 }));
