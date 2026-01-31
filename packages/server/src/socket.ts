@@ -5,7 +5,7 @@ import type {
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
-} from './types';
+} from '@cs2overlay/shared';
 import { MatchStateManager, BPStateManager, OverlayStateManager } from './state';
 
 type TypedServer = Server<

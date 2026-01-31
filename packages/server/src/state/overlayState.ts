@@ -1,4 +1,4 @@
-import type { OverlayState, OverlayName } from '../types';
+import type { OverlayState, OverlayName } from '@cs2overlay/shared';
 
 const defaultComponentState = { visible: true, opacity: 1 };
 

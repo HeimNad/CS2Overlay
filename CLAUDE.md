@@ -6,30 +6,52 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 CS2 esports broadcast overlay system for live streaming with OBS Studio. Displays real-time match graphics (scoreboard, ban/pick, player info, etc.) with an admin control panel for broadcast operators. Documentation is in Chinese (see `docs/Dev_Doc.md`).
 
+## Monorepo Structure
+
+```
+cs2overlay/
+├── packages/
+│   ├── web/        # Next.js Overlay pages + Admin dashboard
+│   ├── server/     # Express + Socket.io backend
+│   ├── shared/     # Shared TypeScript types and constants
+│   └── desktop/    # Electron desktop app (scaffold)
+├── turbo.json      # Turborepo task orchestration
+├── tsconfig.base.json  # Shared TS compiler options
+└── pnpm-workspace.yaml
+```
+
 ## Commands
 
 ```bash
-pnpm dev        # Start Next.js dev server (http://localhost:3000)
-pnpm build      # Production build
-pnpm start      # Start production server
-pnpm lint       # Run ESLint
-pnpm install    # Install dependencies
+pnpm dev              # Start all dev servers (turbo)
+pnpm dev:web          # Start Next.js dev server only (http://localhost:3000)
+pnpm dev:server       # Start backend dev server only (http://localhost:3001)
+pnpm build            # Build all packages (turbo, dependency-aware)
+pnpm build:web        # Build frontend only
+pnpm build:server     # Build backend only
+pnpm build:shared     # Build shared types only
+pnpm lint             # Run ESLint across packages
+pnpm install          # Install all workspace dependencies
 ```
 
-Package manager is **pnpm** (not npm or yarn).
+Package manager is **pnpm** (not npm or yarn). Build tool is **Turborepo**.
 
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router) + React 19 + TypeScript (strict mode)
 - **Styling**: Tailwind CSS v4 (via `@tailwindcss/postcss`)
-- **Path alias**: `@/*` maps to project root (e.g., `@/components/Scoreboard`)
-
-### Planned (not yet installed)
-- **State management**: Zustand (stores in `stores/`)
-- **Animations**: Framer Motion (GPU-accelerated, required for overlay transitions)
+- **State management**: Zustand (stores in `packages/web/stores/`)
+- **Animations**: Framer Motion
 - **Real-time**: Socket.io-client connecting to Express + Socket.io backend
 - **Validation**: Zod
-- **Backend/DB**: Express, Prisma ORM, PostgreSQL
+- **Build**: Turborepo + pnpm workspaces
+- **Path alias**: `@/*` maps to `packages/web/*` (e.g., `@/components/Scoreboard`)
+- **Shared types**: `@cs2overlay/shared` workspace package
+
+### Planned (not yet installed)
+- **Desktop**: Electron (in `packages/desktop/`)
+- **Backend/DB**: Prisma ORM, PostgreSQL
+- **GSI**: CS2 Game State Integration
 
 ## Architecture
 
@@ -45,7 +67,7 @@ Two client types connect to the backend:
 1. **Overlay pages** — read-only browser sources rendered in OBS, receive state updates via WebSocket
 2. **Admin dashboard** — control panel that sends commands via WebSocket to update match state
 
-### Planned Route Structure
+### Route Structure
 
 **Overlay routes** (transparent background, embedded as OBS browser sources):
 - `/overlay/scoreboard` — Live scores, team logos, map info, BO series progress
@@ -64,7 +86,7 @@ Two client types connect to the backend:
 
 ### Core Data Models
 
-Key TypeScript interfaces (defined in `docs/Dev_Doc.md`, to be implemented in `types/`):
+Shared TypeScript interfaces in `packages/shared/src/types.ts`:
 - `Match` — format (BO1/BO3/BO5), teams, maps, status
 - `Team` — name, shortName, logo, players, score
 - `Player` / `PlayerStats` — gameId, realName, country, KDA/ADR/rating
@@ -73,11 +95,11 @@ Key TypeScript interfaces (defined in `docs/Dev_Doc.md`, to be implemented in `t
 
 ### WebSocket Event Protocol
 
-Client → Server: `match:scoreUpdate`, `match:roundUpdate`, `match:statusChange`, `bp:ban`, `bp:pick`, `bp:undo`, `bp:reset`, `overlay:toggle`, `overlay:scene`
+Client → Server: `match:scoreUpdate`, `match:roundUpdate`, `match:statusChange`, `bp:ban`, `bp:pick`, `bp:undo`, `bp:reset`, `overlay:toggle`, `overlay:setOpacity`, `overlay:applyScene`, `overlay:scene`
 
 Server → Client: `match:update`, `bp:update`, `overlay:update`, `player:statsUpdate`, `system:error`, `system:notification`
 
-### Planned Zustand Stores
+### Zustand Stores
 
 - `matchStore` — current match state, score updates
 - `bpStore` — ban/pick session, action history, undo/redo

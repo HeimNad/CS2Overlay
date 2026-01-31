@@ -1,8 +1,9 @@
 import { randomUUID } from 'crypto';
-import type { MatchFormat, BPSession, BPAction } from '../types';
+import type { MatchFormat, BPSession, BPAction } from '@cs2overlay/shared';
+import { CS2_MAP_POOL } from '@cs2overlay/shared';
 import { getFlowForFormat, type BPFlowStep } from './bpFlows';
 
-const DEFAULT_MAP_POOL = ['Dust2', 'Mirage', 'Inferno', 'Nuke', 'Overpass', 'Vertigo', 'Ancient'];
+const DEFAULT_MAP_POOL = [...CS2_MAP_POOL];
 
 export class BPStateManager {
   private session: BPSession | null = null;

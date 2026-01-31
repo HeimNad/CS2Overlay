@@ -277,3 +277,15 @@ export interface ServerToClientEvents {
   'system:error': (payload: SystemErrorPayload) => void;
   'system:notification': (payload: SystemNotificationPayload) => void;
 }
+
+// ============================================
+// Socket.io Server Types
+// ============================================
+
+export interface InterServerEvents {
+  ping: () => void;
+}
+
+export interface SocketData {
+  role: 'overlay' | 'admin';
+}

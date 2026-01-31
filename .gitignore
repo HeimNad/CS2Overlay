@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 node_modules
 /.pnp
@@ -14,16 +12,17 @@ node_modules
 /coverage
 
 # next.js
-/.next/
+.next/
 /out/
 
 # production
 /build
-/server/dist
+**/dist
 
 # misc
 .DS_Store
 *.pem
+nul
 
 # debug
 npm-debug.log*
@@ -40,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# turbo
+.turbo
+
+# server logs
+server_output.log

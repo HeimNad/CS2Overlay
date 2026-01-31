@@ -1,0 +1,13 @@
+{
+  "name": "@cs2overlay/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Electron desktop app for CS2 Overlay (scaffold)",
+  "scripts": {
+    "dev": "echo \"Desktop app not yet implemented\"",
+    "build": "echo \"Desktop app not yet implemented\""
+  },
+  "dependencies": {
+    "@cs2overlay/shared": "workspace:*"
+  }
+}

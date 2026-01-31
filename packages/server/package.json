@@ -1,5 +1,5 @@
 {
-  "name": "cs2overlay-server",
+  "name": "@cs2overlay/server",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,11 +8,11 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@cs2overlay/shared": "workspace:*",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "socket.io": "^4.8.3",
-    "zod": "^3.24.2"
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

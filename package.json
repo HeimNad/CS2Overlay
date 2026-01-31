@@ -2,29 +2,19 @@
   "name": "cs2overlay",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "framer-motion": "^12.29.2",
-    "next": "16.1.6",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "socket.io-client": "^4.8.3",
-    "zod": "^4.3.6",
-    "zustand": "^5.0.10"
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "dev:web": "turbo dev --filter=@cs2overlay/web",
+    "dev:server": "turbo dev --filter=@cs2overlay/server",
+    "build:web": "turbo build --filter=@cs2overlay/web",
+    "build:server": "turbo build --filter=@cs2overlay/server",
+    "build:shared": "turbo build --filter=@cs2overlay/shared"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4",
+    "turbo": "^2",
     "typescript": "^5"
   }
 }

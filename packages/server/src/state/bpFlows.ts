@@ -1,4 +1,4 @@
-import type { MatchFormat, BPPhase, TeamSide } from '../types';
+import type { MatchFormat, BPPhase, TeamSide } from '@cs2overlay/shared';
 
 export interface BPFlowStep {
   phase: BPPhase;

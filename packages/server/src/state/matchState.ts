@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import type { Match, MatchFormat, MatchStatus, TeamSide, Team } from '../types';
+import type { Match, MatchFormat, MatchStatus, TeamSide, Team } from '@cs2overlay/shared';
 
 function createTeam(name: string, shortName: string): Team {
   const now = new Date().toISOString();
