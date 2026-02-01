@@ -45,3 +45,7 @@ next-env.d.ts
 
 # server logs
 server_output.log
+
+# electron
+packages/desktop/release/
+packages/desktop/bundled/

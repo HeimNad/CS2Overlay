@@ -265,6 +265,7 @@ export interface ClientToServerEvents {
   'overlay:applyScene': (payload: OverlayApplyScenePayload) => void;
   'overlay:scene': (payload: OverlayScenePayload) => void;
   'state:requestSync': () => void;
+  'gsi:requestState': () => void;
 }
 
 export interface ServerToClientEvents {
@@ -276,6 +277,161 @@ export interface ServerToClientEvents {
   'player:statsUpdate': (payload: PlayerStats[]) => void;
   'system:error': (payload: SystemErrorPayload) => void;
   'system:notification': (payload: SystemNotificationPayload) => void;
+  'gsi:state': (payload: GSIState) => void;
+  'gsi:roundEnd': (payload: GSIRoundEndPayload) => void;
+  'gsi:mapEnd': (payload: GSIMapEndPayload) => void;
+}
+
+// ============================================
+// GSI (Game State Integration) Types
+// ============================================
+
+export interface GSIAuth {
+  token: string;
+}
+
+export interface GSIProvider {
+  name: string;
+  appid: number;
+  version: number;
+  steamid: string;
+  timestamp: number;
+}
+
+export interface GSIMapTeam {
+  score: number;
+  consecutive_round_losses: number;
+  timeouts_remaining: number;
+  matches_won_this_series: number;
+}
+
+export interface GSIMap {
+  mode: string;
+  name: string;
+  phase: GSIMapPhase;
+  round: number;
+  team_ct: GSIMapTeam;
+  team_t: GSIMapTeam;
+  num_matches_to_win_series: number;
+}
+
+export type GSIMapPhase = 'live' | 'warmup' | 'intermission' | 'gameover';
+
+export interface GSIRound {
+  phase: GSIRoundPhase;
+  win_team?: 'CT' | 'T';
+  bomb?: GSIBombState;
+}
+
+export type GSIRoundPhase = 'live' | 'freezetime' | 'over';
+export type GSIBombState = 'planted' | 'exploded' | 'defused';
+
+export interface GSIPlayerMatchStats {
+  kills: number;
+  assists: number;
+  deaths: number;
+  mvps: number;
+  score: number;
+}
+
+export interface GSIPlayerState {
+  health: number;
+  armor: number;
+  helmet: boolean;
+  money: number;
+  round_kills: number;
+  round_killhs: number;
+  round_totaldmg: number;
+  equip_value: number;
+}
+
+export interface GSIAllPlayerEntry {
+  name: string;
+  observer_slot: number;
+  team: 'CT' | 'T';
+  match_stats: GSIPlayerMatchStats;
+  state: GSIPlayerState;
+}
+
+export interface GSIPhaseCountdowns {
+  phase: string;
+  phase_ends_in: string;
+}
+
+export interface GSIBomb {
+  state: GSIBombState;
+  position: string;
+  player?: string;
+  countdown?: string;
+}
+
+export interface GSIPayload {
+  auth?: GSIAuth;
+  provider?: GSIProvider;
+  map?: GSIMap;
+  round?: GSIRound;
+  allplayers?: Record<string, GSIAllPlayerEntry>;
+  phase_countdowns?: GSIPhaseCountdowns;
+  bomb?: GSIBomb;
+  previously?: Partial<Omit<GSIPayload, 'auth' | 'previously'>>;
+}
+
+// Processed / normalized GSI state broadcast to clients
+
+export interface GSIProcessedPlayer {
+  steamId: string;
+  name: string;
+  observerSlot: number;
+  team: 'CT' | 'T';
+  kills: number;
+  assists: number;
+  deaths: number;
+  mvps: number;
+  score: number;
+  health: number;
+  armor: number;
+  helmet: boolean;
+  money: number;
+  roundKills: number;
+  roundKillHs: number;
+  roundTotalDmg: number;
+  equipValue: number;
+}
+
+export interface GSIState {
+  isConnected: boolean;
+  mapName: string;
+  mapPhase: GSIMapPhase;
+  round: number;
+  roundPhase: GSIRoundPhase;
+  ctScore: number;
+  tScore: number;
+  ctConsecutiveLosses: number;
+  tConsecutiveLosses: number;
+  ctTimeoutsRemaining: number;
+  tTimeoutsRemaining: number;
+  bomb: {
+    state: GSIBombState | 'carried' | 'dropped';
+    countdown?: string;
+    player?: string;
+  } | null;
+  players: GSIProcessedPlayer[];
+  phaseCountdown: {
+    phase: string;
+    endsIn: string;
+  } | null;
+  timestamp: number;
+}
+
+export interface GSIRoundEndPayload {
+  winTeam: 'CT' | 'T';
+  round: number;
+}
+
+export interface GSIMapEndPayload {
+  mapName: string;
+  ctScore: number;
+  tScore: number;
 }
 
 // ============================================

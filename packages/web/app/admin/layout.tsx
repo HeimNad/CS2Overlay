@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useSocketStore } from '@/stores/socketStore';
+import { socketService } from '@/lib/socket';
+import type { OverlayName } from '@/types';
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard' },
@@ -11,6 +13,7 @@ const navItems = [
   { href: '/admin/bp-control', label: 'BP Control' },
   { href: '/admin/scenes', label: 'Scenes' },
   { href: '/admin/overlay-toggle', label: 'Overlay Toggle' },
+  { href: '/admin/gsi', label: 'GSI Monitor' },
 ];
 
 export default function AdminLayout({
@@ -25,6 +28,24 @@ export default function AdminLayout({
   useEffect(() => {
     connect();
   }, [connect]);
+
+  // Listen for Electron shortcut actions
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.electronAPI) return;
+
+    const cleanup = window.electronAPI.onShortcut((action: string) => {
+      if (action.startsWith('toggle:')) {
+        const overlayName = action.replace('toggle:', '') as OverlayName;
+        // We need to read current state; import the store inline to avoid circular deps
+        import('@/stores/overlayStore').then(({ useOverlayStore }) => {
+          const current = useOverlayStore.getState().states[overlayName]?.visible ?? false;
+          socketService.emit('overlay:toggle', { name: overlayName, visible: !current });
+        });
+      }
+    });
+
+    return cleanup;
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-zinc-950 text-zinc-100">

@@ -11,10 +11,17 @@
     "dev:server": "turbo dev --filter=@cs2overlay/server",
     "build:web": "turbo build --filter=@cs2overlay/web",
     "build:server": "turbo build --filter=@cs2overlay/server",
-    "build:shared": "turbo build --filter=@cs2overlay/shared"
+    "build:shared": "turbo build --filter=@cs2overlay/shared",
+    "dev:desktop": "turbo dev --filter=@cs2overlay/desktop"
   },
   "devDependencies": {
     "turbo": "^2",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild"
+    ]
   }
 }

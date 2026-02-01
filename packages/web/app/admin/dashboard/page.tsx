@@ -5,6 +5,7 @@ import { useSocketStore } from '@/stores/socketStore';
 import { useMatchStore } from '@/stores/matchStore';
 import { useBPStore } from '@/stores/bpStore';
 import { useOverlayStore } from '@/stores/overlayStore';
+import { useGSIStore } from '@/stores/gsiStore';
 import { socketService } from '@/lib/socket';
 import type { OverlayName, SystemErrorPayload, SystemNotificationPayload } from '@/types';
 
@@ -35,6 +36,7 @@ export default function DashboardPage() {
   const match = useMatchStore((s) => s.currentMatch);
   const session = useBPStore((s) => s.session);
   const overlayStates = useOverlayStore((s) => s.states);
+  const gsiState = useGSIStore((s) => s.gsiState);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const activeOverlays = Object.values(overlayStates).filter((s) => s.visible).length;
@@ -79,7 +81,7 @@ export default function DashboardPage() {
       <h2 className="mb-6 text-2xl font-bold">Dashboard</h2>
 
       {/* Top row: status cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         {/* Server Status */}
         <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
           <h3 className="mb-1 text-sm text-zinc-500">Server Status</h3>
@@ -126,6 +128,36 @@ export default function DashboardPage() {
             {activeOverlays}
             <span className="text-sm font-normal text-zinc-500"> / 10</span>
           </p>
+        </div>
+
+        {/* GSI Status */}
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
+          <h3 className="mb-1 text-sm text-zinc-500">GSI Status</h3>
+          <div className="flex items-center gap-2">
+            <div
+              className={`h-2.5 w-2.5 rounded-full ${
+                gsiState.isConnected ? 'bg-green-500' : 'bg-zinc-600'
+              }`}
+            />
+            <p className="text-lg font-semibold">
+              {gsiState.isConnected ? 'Connected' : 'Offline'}
+            </p>
+          </div>
+          {gsiState.isConnected && (
+            <div className="mt-1">
+              <p className="text-xs text-zinc-500">
+                {gsiState.mapName} &middot; R{gsiState.round}
+              </p>
+              <p className="text-xs text-zinc-500">
+                CT {gsiState.ctScore} : {gsiState.tScore} T
+              </p>
+            </div>
+          )}
+          {gsiState.timestamp > 0 && (
+            <p className="mt-0.5 text-[10px] text-zinc-600">
+              Last: {new Date(gsiState.timestamp).toLocaleTimeString()}
+            </p>
+          )}
         </div>
       </div>
 

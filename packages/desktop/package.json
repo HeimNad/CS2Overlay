@@ -2,12 +2,46 @@
   "name": "@cs2overlay/desktop",
   "version": "0.1.0",
   "private": true,
-  "description": "Electron desktop app for CS2 Overlay (scaffold)",
+  "description": "Electron desktop app for CS2 Overlay admin panel",
+  "main": "dist/main.js",
   "scripts": {
-    "dev": "echo \"Desktop app not yet implemented\"",
-    "build": "echo \"Desktop app not yet implemented\""
+    "dev": "tsc && electron dist/main.js",
+    "build": "tsc",
+    "start": "electron dist/main.js",
+    "bundle": "node scripts/bundle.js",
+    "pack:dir": "pnpm bundle && electron-builder --dir",
+    "pack:dist": "pnpm bundle && electron-builder"
   },
   "dependencies": {
     "@cs2overlay/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
+    "typescript": "^5.0.0"
+  },
+  "build": {
+    "appId": "com.cs2overlay.desktop",
+    "productName": "CS2 Overlay",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "assets/**/*"
+    ],
+    "extraResources": [
+      { "from": "bundled/server", "to": "bundled/server" },
+      { "from": "bundled/web", "to": "bundled/web" }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }

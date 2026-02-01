@@ -7,6 +7,7 @@ import type {
   SocketData,
 } from '@cs2overlay/shared';
 import { MatchStateManager, BPStateManager, OverlayStateManager } from './state';
+import type { GSIStateManager } from './state/gsiState';
 
 type TypedServer = Server<
   ClientToServerEvents,
@@ -15,7 +16,7 @@ type TypedServer = Server<
   SocketData
 >;
 
-export function initializeSocket(httpServer: HttpServer, corsOrigin: string): TypedServer {
+export function initializeSocket(httpServer: HttpServer, corsOrigin: string, gsiState?: GSIStateManager): TypedServer {
   const io: TypedServer = new Server(httpServer, {
     cors: {
       origin: corsOrigin || '*',
@@ -28,6 +29,15 @@ export function initializeSocket(httpServer: HttpServer, corsOrigin: string): Ty
   const matchState = new MatchStateManager();
   const bpState = new BPStateManager();
   const overlayState = new OverlayStateManager();
+
+  // GSI heartbeat disconnect → broadcast disconnected state
+  if (gsiState) {
+    gsiState.onDisconnect(() => {
+      const state = gsiState.getState();
+      io.to('overlay').emit('gsi:state', state);
+      io.to('admin').emit('gsi:state', state);
+    });
+  }
 
   io.on('connection', (socket) => {
     console.log(`[Socket] Client connected: ${socket.id}`);
@@ -47,6 +57,14 @@ export function initializeSocket(httpServer: HttpServer, corsOrigin: string): Ty
     }
     socket.emit('overlay:update', overlayState.getState());
 
+    // Sync GSI state
+    if (gsiState) {
+      const gsi = gsiState.getState();
+      if (gsi.isConnected) {
+        socket.emit('gsi:state', gsi);
+      }
+    }
+
     // ---- State sync request ----
     socket.on('state:requestSync', () => {
       const m = matchState.getMatch();
@@ -54,6 +72,16 @@ export function initializeSocket(httpServer: HttpServer, corsOrigin: string): Ty
       const s = bpState.getSession();
       if (s) socket.emit('bp:update', s);
       socket.emit('overlay:update', overlayState.getState());
+      if (gsiState) {
+        socket.emit('gsi:state', gsiState.getState());
+      }
+    });
+
+    // ---- GSI events ----
+    socket.on('gsi:requestState', () => {
+      if (gsiState) {
+        socket.emit('gsi:state', gsiState.getState());
+      }
     });
 
     // ---- Match events ----
