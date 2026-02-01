@@ -1,4 +1,4 @@
-import type { OverlayState, OverlayName } from '@cs2overlay/shared';
+import type { OverlayState, OverlayName, Player } from '@cs2overlay/shared';
 
 const defaultComponentState = { visible: true, opacity: 1 };
 
@@ -29,6 +29,14 @@ export class OverlayStateManager {
     this.state[name] = {
       ...this.state[name],
       opacity: Math.max(0, Math.min(1, opacity)),
+    };
+    return this.state;
+  }
+
+  setLowerThirdPlayer(player: Player | null): OverlayState {
+    this.state.lowerThird = {
+      ...this.state.lowerThird,
+      player: player ?? undefined,
     };
     return this.state;
   }

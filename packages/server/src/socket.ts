@@ -211,6 +211,13 @@ export function initializeSocket(httpServer: HttpServer, corsOrigin: string, gsi
       io.to('admin').emit('overlay:update', state);
     });
 
+    socket.on('overlay:selectPlayer', (payload) => {
+      console.log(`[Socket] overlay:selectPlayer`, payload);
+      const state = overlayState.setLowerThirdPlayer(payload.player);
+      io.to('overlay').emit('overlay:update', state);
+      io.to('admin').emit('overlay:update', state);
+    });
+
     socket.on('overlay:scene', (payload) => {
       console.log(`[Socket] overlay:scene`, payload);
       io.to('overlay').emit('overlay:update', overlayState.getState());

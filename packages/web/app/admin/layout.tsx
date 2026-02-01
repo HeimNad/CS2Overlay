@@ -11,6 +11,7 @@ const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard' },
   { href: '/admin/match-control', label: 'Match Control' },
   { href: '/admin/bp-control', label: 'BP Control' },
+  { href: '/admin/lower-third', label: 'Lower Third' },
   { href: '/admin/scenes', label: 'Scenes' },
   { href: '/admin/overlay-toggle', label: 'Overlay Toggle' },
   { href: '/admin/gsi', label: 'GSI Monitor' },

@@ -233,6 +233,10 @@ export interface OverlayScenePayload {
   sceneId: string;
 }
 
+export interface OverlaySelectPlayerPayload {
+  player: Player | null;
+}
+
 // Server -> Client payloads
 export interface SystemErrorPayload {
   code: string;
@@ -264,6 +268,7 @@ export interface ClientToServerEvents {
   'overlay:setOpacity': (payload: OverlaySetOpacityPayload) => void;
   'overlay:applyScene': (payload: OverlayApplyScenePayload) => void;
   'overlay:scene': (payload: OverlayScenePayload) => void;
+  'overlay:selectPlayer': (payload: OverlaySelectPlayerPayload) => void;
   'state:requestSync': () => void;
   'gsi:requestState': () => void;
 }
