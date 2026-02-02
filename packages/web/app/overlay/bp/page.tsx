@@ -1,6 +1,8 @@
 'use client';
 
-import BPOverlay from '@/components/overlays/BPOverlay';
+import dynamic from 'next/dynamic';
+
+const BPOverlay = dynamic(() => import('@/components/overlays/BPOverlay'), { ssr: false });
 
 export default function BPPage() {
   return <BPOverlay />;

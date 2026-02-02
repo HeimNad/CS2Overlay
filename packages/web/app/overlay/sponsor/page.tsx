@@ -1,6 +1,8 @@
 'use client';
 
-import Sponsor from '@/components/overlays/Sponsor';
+import dynamic from 'next/dynamic';
+
+const Sponsor = dynamic(() => import('@/components/overlays/Sponsor'), { ssr: false });
 
 export default function SponsorPage() {
   return <Sponsor />;

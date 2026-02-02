@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useSocketStore } from '@/stores/socketStore';
+import { useThemeStore } from '@/stores/themeStore';
 
 export default function OverlayLayout({
   children,
@@ -9,6 +10,7 @@ export default function OverlayLayout({
   children: React.ReactNode;
 }) {
   const connect = useSocketStore((s) => s.connect);
+  const currentTheme = useThemeStore((s) => s.currentTheme);
 
   useEffect(() => {
     connect();
@@ -16,6 +18,7 @@ export default function OverlayLayout({
 
   return (
     <div
+      data-overlay-theme={currentTheme === 'default-dark' ? undefined : currentTheme}
       style={{
         width: 1920,
         height: 1080,

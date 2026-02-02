@@ -1,6 +1,8 @@
 'use client';
 
-import Scoreboard from '@/components/overlays/Scoreboard';
+import dynamic from 'next/dynamic';
+
+const Scoreboard = dynamic(() => import('@/components/overlays/Scoreboard'), { ssr: false });
 
 export default function ScoreboardPage() {
   return <Scoreboard />;

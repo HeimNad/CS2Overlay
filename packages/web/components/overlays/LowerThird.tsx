@@ -1,32 +1,34 @@
 'use client';
 
+import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useOverlayStore } from '@/stores/overlayStore';
 import { useGSIStore } from '@/stores/gsiStore';
 import { useMatchStore } from '@/stores/matchStore';
+import { SPRING_SMOOTH } from '@/lib/animations';
 import type { Player, PlayerStats } from '@/types';
 
-function StatBlock({ label, value }: { label: string; value: string | number }) {
+const StatBlock = React.memo(function StatBlock({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="text-[10px] font-semibold uppercase tracking-wider text-white/50">
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-overlay-text-muted">
         {label}
       </span>
-      <span className="text-sm font-bold tabular-nums text-white">
+      <span className="font-mono text-sm font-bold tabular-nums text-overlay-text-primary">
         {value}
       </span>
     </div>
   );
-}
+});
 
-function CountryFlag({ country }: { country: string }) {
+const CountryFlag = React.memo(function CountryFlag({ country }: { country: string }) {
   if (!country) return null;
   return (
     <span className="text-2xl leading-none" title={country}>
       {country}
     </span>
   );
-}
+});
 
 export default function LowerThird() {
   const visible = useOverlayStore((s) => s.states.lowerThird.visible);
@@ -72,23 +74,23 @@ export default function LowerThird() {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+          transition={SPRING_SMOOTH}
           style={{ opacity }}
           className="absolute bottom-16 left-1/2 -translate-x-1/2"
         >
-          <div className="flex items-stretch rounded-lg bg-black/85 shadow-2xl shadow-black/50 backdrop-blur-sm">
+          <div className="flex items-stretch rounded-lg border border-overlay-border-subtle bg-overlay-bg-primary shadow-2xl shadow-overlay-shadow backdrop-blur-sm">
             {/* Left: Player identity */}
-            <div className="flex items-center gap-4 border-r border-white/10 px-6 py-4">
+            <div className="flex items-center gap-4 border-r border-overlay-border px-6 py-4">
               <CountryFlag country={player.country} />
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-white">
+                <span className="text-lg font-bold text-overlay-text-primary">
                   {player.realName || player.gameId}
                 </span>
-                <span className="text-sm font-semibold text-yellow-400">
+                <span className="text-sm font-semibold text-overlay-highlight">
                   {player.gameId}
                 </span>
                 {teamName && (
-                  <span className="text-xs text-white/50">
+                  <span className="text-xs text-overlay-text-muted">
                     {teamName}
                   </span>
                 )}
@@ -99,19 +101,19 @@ export default function LowerThird() {
             {stats && (
               <div className="flex items-center gap-5 px-6 py-4">
                 <StatBlock label="K" value={stats.kills} />
-                <span className="text-white/20">/</span>
+                <span className="text-overlay-text-primary/20">/</span>
                 <StatBlock label="D" value={stats.deaths} />
-                <span className="text-white/20">/</span>
+                <span className="text-overlay-text-primary/20">/</span>
                 <StatBlock label="A" value={stats.assists} />
                 {stats.adr > 0 && (
                   <>
-                    <div className="mx-1 h-8 w-px bg-white/10" />
+                    <div className="mx-1 h-8 w-px bg-overlay-border" />
                     <StatBlock label="ADR" value={stats.adr.toFixed(1)} />
                   </>
                 )}
                 {stats.rating > 0 && (
                   <>
-                    <div className="mx-1 h-8 w-px bg-white/10" />
+                    <div className="mx-1 h-8 w-px bg-overlay-border" />
                     <StatBlock label="Rating" value={stats.rating.toFixed(2)} />
                   </>
                 )}

@@ -1,6 +1,8 @@
 'use client';
 
-import PlayerCam from '@/components/overlays/PlayerCam';
+import dynamic from 'next/dynamic';
+
+const PlayerCam = dynamic(() => import('@/components/overlays/PlayerCam'), { ssr: false });
 
 export default function PlayerCamPage() {
   return <PlayerCam />;

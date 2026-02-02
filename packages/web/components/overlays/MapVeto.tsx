@@ -1,13 +1,15 @@
 'use client';
 
+import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBPStore } from '@/stores/bpStore';
 import { useOverlayStore } from '@/stores/overlayStore';
 import { useMatchStore } from '@/stores/matchStore';
 import { MAP_COLORS } from '@/lib/constants';
+import { SPRING_CARD, FADE, staggerDelay } from '@/lib/animations';
 import type { BPAction } from '@/types';
 
-function VetoCard({
+const VetoCard = React.memo(function VetoCard({
   mapName,
   action,
   isDecider,
@@ -32,18 +34,18 @@ function VetoCard({
       : teamBName
     : '';
 
-  let statusColor = 'bg-white/10';
+  let statusColor = 'bg-overlay-text-primary/10';
   let statusText = '';
-  let statusTextColor = 'text-white/60';
+  let statusTextColor = 'text-overlay-text-muted';
 
   if (isBanned) {
-    statusColor = 'bg-red-500/20';
+    statusColor = 'bg-overlay-ban/20';
     statusText = 'BAN';
-    statusTextColor = 'text-red-400';
+    statusTextColor = 'text-overlay-ban';
   } else if (isPicked) {
-    statusColor = 'bg-emerald-500/20';
+    statusColor = 'bg-overlay-pick/20';
     statusText = 'PICK';
-    statusTextColor = 'text-emerald-400';
+    statusTextColor = 'text-overlay-pick';
   } else if (isDecider) {
     statusColor = 'bg-yellow-500/20';
     statusText = 'DECIDER';
@@ -54,7 +56,7 @@ function VetoCard({
     <motion.div
       initial={{ opacity: 0, y: 40, scale: 0.85 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: index * 0.1, type: 'spring', stiffness: 300, damping: 22 }}
+      transition={{ delay: staggerDelay(index, 0.1), ...SPRING_CARD }}
       className="flex w-[140px] flex-col items-center overflow-hidden rounded-lg"
       style={{
         border: isDecider
@@ -71,12 +73,12 @@ function VetoCard({
         className="relative flex h-[100px] w-full items-center justify-center"
         style={{ background: bgColor }}
       >
-        <span className="text-sm font-bold uppercase tracking-wider text-white/90">
+        <span className="text-sm font-bold uppercase tracking-wider text-overlay-text-primary/90">
           {mapName}
         </span>
         {isBanned && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <span className="text-3xl font-black text-red-500/70">✕</span>
+            <span className="text-3xl font-black text-overlay-ban/70">✕</span>
           </div>
         )}
       </div>
@@ -90,17 +92,17 @@ function VetoCard({
           </span>
         )}
         {teamName && (
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-white/50">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-overlay-text-muted">
             {teamName}
           </span>
         )}
         {isDecider && !teamName && (
-          <span className="text-[10px] text-white/30">───</span>
+          <span className="text-[10px] text-overlay-text-primary/30">───</span>
         )}
       </div>
     </motion.div>
   );
-}
+});
 
 export default function MapVeto() {
   const session = useBPStore((s) => s.session);
@@ -126,11 +128,11 @@ export default function MapVeto() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={FADE}
           style={{ opacity }}
           className="absolute inset-0 flex flex-col items-center justify-center"
         >
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-overlay-bg-secondary" />
 
           <div className="relative z-10 flex flex-col items-center gap-8">
             {/* Header */}
@@ -140,15 +142,15 @@ export default function MapVeto() {
               transition={{ delay: 0.1 }}
               className="flex flex-col items-center gap-2"
             >
-              <h1 className="text-3xl font-black uppercase tracking-[0.3em] text-white">
+              <h1 className="text-3xl font-black uppercase tracking-[0.3em] text-overlay-text-primary">
                 MAP VETO
               </h1>
               <div className="flex items-center gap-3">
-                <span className="text-sm font-bold text-white/70">{teamAName}</span>
-                <span className="rounded bg-white/10 px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-white/50">
+                <span className="text-sm font-bold text-overlay-text-secondary">{teamAName}</span>
+                <span className="rounded bg-overlay-text-primary/10 px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-overlay-text-muted">
                   {session.format}
                 </span>
-                <span className="text-sm font-bold text-white/70">{teamBName}</span>
+                <span className="text-sm font-bold text-overlay-text-secondary">{teamBName}</span>
               </div>
             </motion.div>
 

@@ -3,6 +3,99 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Overlay theme variables — Default Dark */
+  --overlay-bg-primary: rgba(0, 0, 0, 0.80);
+  --overlay-bg-secondary: rgba(0, 0, 0, 0.60);
+  --overlay-border: rgba(255, 255, 255, 0.10);
+  --overlay-border-subtle: rgba(255, 255, 255, 0.05);
+  --overlay-text-primary: #ffffff;
+  --overlay-text-secondary: rgba(255, 255, 255, 0.70);
+  --overlay-text-muted: rgba(255, 255, 255, 0.40);
+  --overlay-accent: #3b82f6;
+  --overlay-highlight: #facc15;
+  --overlay-ban: #ef4444;
+  --overlay-ban-bg: rgba(127, 29, 29, 0.70);
+  --overlay-pick: #10b981;
+  --overlay-pick-bg: rgba(6, 78, 59, 0.60);
+  --overlay-live: #ef4444;
+  --overlay-shadow: rgba(0, 0, 0, 0.40);
+}
+
+/* Blue Neon */
+[data-overlay-theme="blue-neon"] {
+  --overlay-bg-primary: rgba(10, 15, 40, 0.85);
+  --overlay-bg-secondary: rgba(10, 15, 40, 0.60);
+  --overlay-border: rgba(59, 130, 246, 0.25);
+  --overlay-border-subtle: rgba(59, 130, 246, 0.10);
+  --overlay-text-primary: #e0edff;
+  --overlay-text-secondary: rgba(224, 237, 255, 0.70);
+  --overlay-text-muted: rgba(224, 237, 255, 0.40);
+  --overlay-accent: #60a5fa;
+  --overlay-highlight: #93c5fd;
+  --overlay-ban: #f87171;
+  --overlay-ban-bg: rgba(127, 29, 29, 0.70);
+  --overlay-pick: #34d399;
+  --overlay-pick-bg: rgba(6, 78, 59, 0.60);
+  --overlay-live: #f87171;
+  --overlay-shadow: rgba(59, 130, 246, 0.20);
+}
+
+/* Red Aggressive */
+[data-overlay-theme="red-aggressive"] {
+  --overlay-bg-primary: rgba(30, 5, 5, 0.85);
+  --overlay-bg-secondary: rgba(30, 5, 5, 0.60);
+  --overlay-border: rgba(239, 68, 68, 0.25);
+  --overlay-border-subtle: rgba(239, 68, 68, 0.10);
+  --overlay-text-primary: #ffe0e0;
+  --overlay-text-secondary: rgba(255, 224, 224, 0.70);
+  --overlay-text-muted: rgba(255, 224, 224, 0.40);
+  --overlay-accent: #ef4444;
+  --overlay-highlight: #fca5a5;
+  --overlay-ban: #fbbf24;
+  --overlay-ban-bg: rgba(120, 80, 0, 0.70);
+  --overlay-pick: #34d399;
+  --overlay-pick-bg: rgba(6, 78, 59, 0.60);
+  --overlay-live: #fbbf24;
+  --overlay-shadow: rgba(239, 68, 68, 0.20);
+}
+
+/* Clean White */
+[data-overlay-theme="clean-white"] {
+  --overlay-bg-primary: rgba(255, 255, 255, 0.85);
+  --overlay-bg-secondary: rgba(255, 255, 255, 0.60);
+  --overlay-border: rgba(0, 0, 0, 0.10);
+  --overlay-border-subtle: rgba(0, 0, 0, 0.05);
+  --overlay-text-primary: #1a1a1a;
+  --overlay-text-secondary: rgba(26, 26, 26, 0.70);
+  --overlay-text-muted: rgba(26, 26, 26, 0.40);
+  --overlay-accent: #2563eb;
+  --overlay-highlight: #d97706;
+  --overlay-ban: #dc2626;
+  --overlay-ban-bg: rgba(254, 202, 202, 0.70);
+  --overlay-pick: #059669;
+  --overlay-pick-bg: rgba(167, 243, 208, 0.60);
+  --overlay-live: #dc2626;
+  --overlay-shadow: rgba(0, 0, 0, 0.10);
+}
+
+/* Green Matrix */
+[data-overlay-theme="green-matrix"] {
+  --overlay-bg-primary: rgba(0, 15, 5, 0.85);
+  --overlay-bg-secondary: rgba(0, 15, 5, 0.60);
+  --overlay-border: rgba(16, 185, 129, 0.25);
+  --overlay-border-subtle: rgba(16, 185, 129, 0.10);
+  --overlay-text-primary: #d1fae5;
+  --overlay-text-secondary: rgba(209, 250, 229, 0.70);
+  --overlay-text-muted: rgba(209, 250, 229, 0.40);
+  --overlay-accent: #10b981;
+  --overlay-highlight: #6ee7b7;
+  --overlay-ban: #f87171;
+  --overlay-ban-bg: rgba(127, 29, 29, 0.70);
+  --overlay-pick: #a3e635;
+  --overlay-pick-bg: rgba(63, 98, 18, 0.60);
+  --overlay-live: #f87171;
+  --overlay-shadow: rgba(16, 185, 129, 0.20);
 }
 
 @theme inline {
@@ -10,6 +103,21 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Overlay theme colors for Tailwind utility classes */
+  --color-overlay-bg-primary: var(--overlay-bg-primary);
+  --color-overlay-bg-secondary: var(--overlay-bg-secondary);
+  --color-overlay-border: var(--overlay-border);
+  --color-overlay-border-subtle: var(--overlay-border-subtle);
+  --color-overlay-text-primary: var(--overlay-text-primary);
+  --color-overlay-text-secondary: var(--overlay-text-secondary);
+  --color-overlay-text-muted: var(--overlay-text-muted);
+  --color-overlay-accent: var(--overlay-accent);
+  --color-overlay-highlight: var(--overlay-highlight);
+  --color-overlay-ban: var(--overlay-ban);
+  --color-overlay-pick: var(--overlay-pick);
+  --color-overlay-live: var(--overlay-live);
+  --color-overlay-shadow: var(--overlay-shadow);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +130,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }

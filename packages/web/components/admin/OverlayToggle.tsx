@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useCallback } from 'react';
 import { useOverlayStore } from '@/stores/overlayStore';
 import { socketService } from '@/lib/socket';
 import type { OverlayName } from '@/types';
@@ -44,14 +45,21 @@ function ToggleSwitch({
 
 export default function OverlayToggle() {
   const overlayStates = useOverlayStore((s) => s.states);
+  const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const handleToggle = (name: OverlayName, visible: boolean) => {
     socketService.emit('overlay:toggle', { name, visible });
   };
 
-  const handleOpacity = (name: OverlayName, opacity: number) => {
-    socketService.emit('overlay:setOpacity', { name, opacity });
-  };
+  const handleOpacity = useCallback((name: OverlayName, opacity: number) => {
+    if (debounceTimers.current[name]) {
+      clearTimeout(debounceTimers.current[name]);
+    }
+    debounceTimers.current[name] = setTimeout(() => {
+      socketService.emit('overlay:setOpacity', { name, opacity });
+      delete debounceTimers.current[name];
+    }, 100);
+  }, []);
 
   const handleShowAll = () => {
     for (const item of OVERLAY_LIST) {

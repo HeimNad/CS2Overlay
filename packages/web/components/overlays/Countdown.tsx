@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useOverlayStore } from '@/stores/overlayStore';
 import { useGSIStore } from '@/stores/gsiStore';
+import { SPRING_SMOOTH, SPRING_SNAPPY } from '@/lib/animations';
 
 export default function Countdown() {
   const visible = useOverlayStore((s) => s.states.countdown.visible);
@@ -42,14 +43,14 @@ export default function Countdown() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+          transition={SPRING_SMOOTH}
           style={{ opacity }}
           className="absolute inset-0 flex flex-col items-center justify-center"
         >
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-overlay-bg-secondary/70" />
           <div className="relative z-10 flex flex-col items-center gap-4">
             <motion.span
-              className="text-sm font-bold uppercase tracking-[0.4em] text-white/60"
+              className="text-sm font-bold uppercase tracking-[0.4em] text-overlay-text-muted"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
@@ -63,8 +64,8 @@ export default function Countdown() {
                 initial={{ scale: 1.3, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.7, opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                className="text-[120px] font-black leading-none tabular-nums text-white"
+                transition={SPRING_SNAPPY}
+                className="font-mono text-[120px] font-black leading-none tabular-nums text-overlay-text-primary"
                 style={{ textShadow: '0 0 40px rgba(255,255,255,0.3)' }}
               >
                 {displayTime}

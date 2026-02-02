@@ -1,12 +1,14 @@
 'use client';
 
+import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useBPStore } from '@/stores/bpStore';
 import { useOverlayStore } from '@/stores/overlayStore';
 import { MAP_COLORS } from '@/lib/constants';
+import { SPRING_CARD, SPRING_SNAPPY, FADE, staggerDelay } from '@/lib/animations';
 import type { BPAction } from '@/types';
 
-function MapCard({
+const MapCard = React.memo(function MapCard({
   mapName,
   action,
   isDecider,
@@ -25,7 +27,7 @@ function MapCard({
     <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: index * 0.08, type: 'spring', stiffness: 300, damping: 22 }}
+      transition={{ delay: staggerDelay(index), ...SPRING_CARD }}
       className="relative flex h-[160px] w-[120px] flex-col items-center justify-end overflow-hidden rounded-lg"
       style={{
         background: bgColor,
@@ -39,7 +41,7 @@ function MapCard({
       {/* Map name */}
       <div
         className={`relative z-10 w-full py-2 text-center text-xs font-bold uppercase tracking-wider ${
-          isBanned ? 'text-white/50' : 'text-white'
+          isBanned ? 'text-overlay-text-muted' : 'text-overlay-text-primary'
         }`}
         style={{
           background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
@@ -55,15 +57,15 @@ function MapCard({
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-900/70"
-            style={{ backdropFilter: 'grayscale(1)' }}
+            transition={SPRING_SNAPPY}
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center"
+            style={{ backgroundColor: 'var(--overlay-ban-bg)', backdropFilter: 'grayscale(1)' }}
           >
-            <span className="text-2xl font-black text-red-400">X</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-red-300">
+            <span className="text-2xl font-black text-overlay-ban">X</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-overlay-ban/75">
               BANNED
             </span>
-            <span className="mt-0.5 text-[9px] text-red-300/70">
+            <span className="mt-0.5 text-[9px] text-overlay-ban/50">
               Team {action.team}
             </span>
           </motion.div>
@@ -77,11 +79,12 @@ function MapCard({
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-emerald-900/60"
+            transition={SPRING_SNAPPY}
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center"
+            style={{ backgroundColor: 'var(--overlay-pick-bg)' }}
           >
-            <span className="text-lg font-black text-emerald-300">PICK</span>
-            <span className="mt-0.5 text-[9px] font-semibold text-emerald-200/80">
+            <span className="text-lg font-black text-overlay-pick">PICK</span>
+            <span className="mt-0.5 text-[9px] font-semibold text-overlay-pick/80">
               Team {action.team}
             </span>
           </motion.div>
@@ -95,7 +98,7 @@ function MapCard({
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            transition={SPRING_SNAPPY}
             className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-yellow-900/50"
           >
             <span className="text-lg font-black text-yellow-300">DECIDER</span>
@@ -104,7 +107,7 @@ function MapCard({
       </AnimatePresence>
     </motion.div>
   );
-}
+});
 
 export default function BPOverlay() {
   const session = useBPStore((s) => s.session);
@@ -126,20 +129,20 @@ export default function BPOverlay() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={FADE}
           style={{ opacity }}
           className="absolute inset-0 flex flex-col items-center justify-center"
         >
           {/* Background dim */}
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-overlay-bg-secondary" />
 
           <div className="relative z-10 flex flex-col items-center gap-8">
             {/* Header */}
             <div className="flex flex-col items-center gap-2">
-              <h1 className="text-3xl font-black uppercase tracking-[0.3em] text-white">
+              <h1 className="text-3xl font-black uppercase tracking-[0.3em] text-overlay-text-primary">
                 MAP VETO
               </h1>
-              <span className="rounded bg-white/10 px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-white/70">
+              <span className="rounded bg-overlay-text-primary/10 px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-overlay-text-secondary">
                 {session.format}
               </span>
             </div>
@@ -166,10 +169,10 @@ export default function BPOverlay() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-3 rounded-full bg-white/10 px-6 py-2 backdrop-blur-sm"
+                className="flex items-center gap-3 rounded-full bg-overlay-text-primary/10 px-6 py-2 backdrop-blur-sm"
               >
                 <div className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
-                <span className="text-sm font-semibold uppercase tracking-wider text-white">
+                <span className="text-sm font-semibold uppercase tracking-wider text-overlay-text-primary">
                   Team {session.activeTeam} &mdash;{' '}
                   {session.currentPhase === 'ban' ? 'BAN' : 'PICK'}
                 </span>

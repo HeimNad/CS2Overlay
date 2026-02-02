@@ -31,7 +31,21 @@ interface GSIStore {
 export const useGSIStore = create<GSIStore>((set, get) => ({
   gsiState: defaultGSIState,
 
-  setGSIState: (state) => set({ gsiState: state }),
+  setGSIState: (state) => {
+    const current = get().gsiState;
+    // Skip update if key fields unchanged
+    if (
+      current.round === state.round &&
+      current.roundPhase === state.roundPhase &&
+      current.ctScore === state.ctScore &&
+      current.tScore === state.tScore &&
+      current.mapPhase === state.mapPhase &&
+      current.timestamp === state.timestamp
+    ) {
+      return;
+    }
+    set({ gsiState: state });
+  },
 
   reset: () => set({ gsiState: defaultGSIState }),
 

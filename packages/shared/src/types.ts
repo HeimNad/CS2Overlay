@@ -269,6 +269,7 @@ export interface ClientToServerEvents {
   'overlay:applyScene': (payload: OverlayApplyScenePayload) => void;
   'overlay:scene': (payload: OverlayScenePayload) => void;
   'overlay:selectPlayer': (payload: OverlaySelectPlayerPayload) => void;
+  'overlay:setTheme': (payload: { theme: string }) => void;
   'state:requestSync': () => void;
   'gsi:requestState': () => void;
 }
@@ -280,6 +281,7 @@ export interface ServerToClientEvents {
   'bp:cleared': () => void;
   'overlay:update': (payload: OverlayState) => void;
   'player:statsUpdate': (payload: PlayerStats[]) => void;
+  'overlay:themeUpdate': (payload: { theme: string }) => void;
   'system:error': (payload: SystemErrorPayload) => void;
   'system:notification': (payload: SystemNotificationPayload) => void;
   'gsi:state': (payload: GSIState) => void;

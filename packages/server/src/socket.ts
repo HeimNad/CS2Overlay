@@ -29,6 +29,7 @@ export function initializeSocket(httpServer: HttpServer, corsOrigin: string, gsi
   const matchState = new MatchStateManager();
   const bpState = new BPStateManager();
   const overlayState = new OverlayStateManager();
+  let currentTheme = 'default-dark';
 
   // GSI heartbeat disconnect → broadcast disconnected state
   if (gsiState) {
@@ -56,6 +57,7 @@ export function initializeSocket(httpServer: HttpServer, corsOrigin: string, gsi
       socket.emit('bp:update', session);
     }
     socket.emit('overlay:update', overlayState.getState());
+    socket.emit('overlay:themeUpdate', { theme: currentTheme });
 
     // Sync GSI state
     if (gsiState) {
@@ -72,6 +74,7 @@ export function initializeSocket(httpServer: HttpServer, corsOrigin: string, gsi
       const s = bpState.getSession();
       if (s) socket.emit('bp:update', s);
       socket.emit('overlay:update', overlayState.getState());
+      socket.emit('overlay:themeUpdate', { theme: currentTheme });
       if (gsiState) {
         socket.emit('gsi:state', gsiState.getState());
       }
@@ -221,6 +224,13 @@ export function initializeSocket(httpServer: HttpServer, corsOrigin: string, gsi
     socket.on('overlay:scene', (payload) => {
       console.log(`[Socket] overlay:scene`, payload);
       io.to('overlay').emit('overlay:update', overlayState.getState());
+    });
+
+    socket.on('overlay:setTheme', (payload) => {
+      console.log(`[Socket] overlay:setTheme`, payload);
+      currentTheme = payload.theme;
+      io.to('overlay').emit('overlay:themeUpdate', { theme: currentTheme });
+      io.to('admin').emit('overlay:themeUpdate', { theme: currentTheme });
     });
 
     // ---- Disconnect ----
